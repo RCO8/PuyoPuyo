@@ -184,6 +184,8 @@ while running:
     if roundDropsY == 20:
         print("바닥")
         
+    #판정
+        
     drawImage()
     
     pygame.display.update()
