@@ -58,9 +58,11 @@ roundDrops = [[0,0,0],[0,0,0],[0,0,0]]
 roundDrops[0][1] = random.randrange(1,6)
 roundDrops[1][1] = random.randrange(1,6)
 roundMoves = 0
+roundDown = False
 roundDropsX = 0
 roundDropsY = 0
 
+fallingTicks = 0
 #이미지 그리기
 def drawImage():
     screen.fill(bg_colors.bg_black)
@@ -83,15 +85,15 @@ def drawImage():
     for i in range(0,3):
         for j in range(0,3):
             if(roundDrops[i][j] == 1):
-                screen.blit(red.sprite, ((j+roundDropsX)*16,i*16), red.sprite_clip)
+                screen.blit(red.sprite, ((j+roundDropsX)*16,(i+roundDropsY)*16), red.sprite_clip)
             elif(roundDrops[i][j] == 2):
-                screen.blit(yellow.sprite, ((j+roundDropsX)*16,i*16),yellow.sprite_clip)
+                screen.blit(yellow.sprite, ((j+roundDropsX)*16,(i+roundDropsY)*16),yellow.sprite_clip)
             elif(roundDrops[i][j] == 3):
-                screen.blit(green.sprite, ((j+roundDropsX)*16,i*16),green.sprite_clip)
+                screen.blit(green.sprite, ((j+roundDropsX)*16,(i+roundDropsY)*16),green.sprite_clip)
             elif(roundDrops[i][j] == 4):
-                screen.blit(blue.sprite, ((j+roundDropsX)*16,i*16),blue.sprite_clip)
+                screen.blit(blue.sprite, ((j+roundDropsX)*16,(i+roundDropsY)*16),blue.sprite_clip)
             elif(roundDrops[i][j] == 5):
-                screen.blit(purple.sprite, ((j+roundDropsX)*16,i*16),purple.sprite_clip)
+                screen.blit(purple.sprite, ((j+roundDropsX)*16,(i+roundDropsY)*16),purple.sprite_clip)
     
 
 #게임 진행 루프
@@ -109,52 +111,79 @@ while running:
         #키를 누르고 있을 때
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                print("좌로 이동")
+                #print("좌로 이동")
                 roundMoves = -1
             elif event.key == pygame.K_RIGHT:
-                print("우로 이동")
+                #print("우로 이동")
                 roundMoves = 1
             if event.key == pygame.K_UP:
                 print("바로 내리기")
             elif event.key == pygame.K_DOWN:
-                print("더 내리기")
+                #print("더 내리기")
+                roundDown = True
             if event.key == pygame.K_z:
                 #print("좌로 회전")
-                if roundDrops[0][1] > 0:
+                if roundDrops[0][1] > 0:    #상단위치
                     roundDrops[1][0] = roundDrops[0][1]
                     roundDrops[0][1] = 0
-                elif roundDrops[1][0] > 0:
+                    if roundDropsX == -1:
+                        roundDropsX += 1
+                elif roundDrops[1][0] > 0:  #좌측위치
                     roundDrops[2][1] = roundDrops[1][0]
                     roundDrops[1][0] = 0
-                elif roundDrops[2][1] > 0:
+                elif roundDrops[2][1] > 0:  #하단위치
                     roundDrops[1][2] = roundDrops[2][1]
                     roundDrops[2][1] = 0
-                elif roundDrops[1][2] > 0:
+                    if roundDropsX == 8:
+                        roundDropsX -= 1
+                elif roundDrops[1][2] > 0:  #우측위치
                     roundDrops[0][1] = roundDrops[1][2]
                     roundDrops[1][2] = 0 
             elif event.key == pygame.K_x:
                 #print("우로 회전")
-                if roundDrops[0][1] > 0:
+                if roundDrops[0][1] > 0:    #상단위치
                     roundDrops[1][2] = roundDrops[0][1]
                     roundDrops[0][1] = 0
-                elif roundDrops[1][2] > 0:
+                    if roundDropsX == 8:
+                        roundDropsX -= 1
+                elif roundDrops[1][2] > 0:  #우측위치   
                     roundDrops[2][1] = roundDrops[1][2]
                     roundDrops[1][2] = 0
-                elif roundDrops[2][1] > 0:
+                elif roundDrops[2][1] > 0:  #하단위치
                     roundDrops[1][0] = roundDrops[2][1]
                     roundDrops[2][1] = 0
-                elif roundDrops[1][0] > 0:
+                    if roundDropsX == -1:
+                        roundDropsX += 1
+                elif roundDrops[1][0] > 0:  #좌측위치
                     roundDrops[0][1] = roundDrops[1][0]
                     roundDrops[1][0] = 0 
         #키를 떼었을 때
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 roundMoves = 0
-            if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
-                ypos = 0
+            if event.key == pygame.K_DOWN:
+                roundDown = False
     
     #갱신
+    
+    #이동
     roundDropsX += roundMoves
+    if(roundDropsX < -1):
+        roundDropsX = -1
+    elif(roundDropsX > 8):
+        roundDropsX = 8
+    
+    #하락
+    if roundDown:
+        roundDropsY += 1
+    else:
+        fallingTicks += 1
+        if fallingTicks == 10:
+            fallingTicks = 0
+            roundDropsY += 1
+    if roundDropsY == 20:
+        print("바닥")
+        
     drawImage()
     
     pygame.display.update()
