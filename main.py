@@ -53,49 +53,101 @@ for i in range(20):
         tmp.append(0)
     puyoBottle.append(tmp)
 
+
+
 #움직일 블록
 roundDrops = [[0,0,0],[0,0,0],[0,0,0]]
+#기본으로 회전축이 중심축의 한칸 위로하게
 roundDrops[0][1] = random.randrange(1,6)
 roundDrops[1][1] = random.randrange(1,6)
-roundMoves = 0
-roundDown = False
+roundMoves = 0      #좌우 키를 누를 때
+roundDown = False   #내리기 키 누를 때
 roundDropsX = 0
 roundDropsY = 0
 
 fallingTicks = 0
+
+def blockLiner(x, y, i): #똑같은 블록 검사
+    hor = 0
+    ver = 0
+    if x <= 9 and puyoBottle[y][x + 1] == i:  #우측에 똑같은게 있는지
+        if x >= 0 and puyoBottle[y][x - 1] == i:   #좌측에 똑같은게 있는지
+            if y < 19 and puyoBottle[y + 1][x] == i:   #하단에 똑같은게 있는지
+                if puyoBottle[y - 1][x] == i:   #상단에 똑같은게 있는지
+                    hor = 3
+                    ver = 0
+                else:
+                    hor = 0
+                    ver = 3
+            elif y >= 0 and puyoBottle[y - 1][x] == i: #상단에 똑같은게 있는지
+                hor = 1
+                ver = 3
+            else:
+                hor = 1
+                ver = 0
+        elif y < 19 and puyoBottle[y + 1][x] == i: #하단에 똑같은게 있는지
+            if y >= 0 and puyoBottle[y - 1][x] == i:   #상단에 똑같은게 있는지
+                hor = 2
+                ver = 3
+            else:
+                hor = 0
+                ver = 2
+        elif y >= 0 and puyoBottle[y - 1][x] == i:  #상단에 똑같은게 있는지
+            hor = 2
+            ver = 2
+        else:
+            hor = 0
+            ver = 1
+    elif x >= 0 and puyoBottle[y][x - 1] == i: #좌측에 똑같은게 있는지
+        if y < 19 and puyoBottle[y + 1][x] == i:   #하단에 똑같은게 있는지
+            if y >= 0 and puyoBottle[y - 1][x] == i:   #상단에 똑같은게 있는지
+                hor = 3
+                ver = 3
+            else:
+                hor = 1
+                ver = 2
+        elif y >= 0 and puyoBottle[y - 1][x] == i: #상단에 똑같은게 있는지
+            hor = 3
+            ver = 2
+        else:
+            hor = 1
+            ver = 1
+    elif y < 19 and puyoBottle[y + 1][x] == i:  #하단에 똑같은게 있는지
+        if y >= 0 and puyoBottle[y - 1][x] == i:  #상단에 똑같은게 있는지
+            hor = 0
+            ver = 2
+        else:
+            hor = 2
+            ver = 1
+    elif y >= 0 and puyoBottle[y - 1][x] == i:  #상단에 똑같은게 있는지
+        hor = 3
+        ver = 1
+    else:
+        hor = 0
+        ver = 0
+    return (hor*16,ver*16,16,16)
+
 #이미지 그리기
 def drawImage():
     screen.fill(bg_colors.bg_black)
-    
+    screen.fill(bg_colors.bg_orange,(0,0,160,320))  #블록판 채우기
     #기본틀
     for i in range(19,-1,-1):
         for j in range(9,-1,-1):
-            if(puyoBottle[i][j] == 1):
-                screen.blit(red.sprite, (j*16,i*16), red.sprite_clip)
-            elif(puyoBottle[i][j] == 2):
-                screen.blit(yellow.sprite, (j*16,i*16),yellow.sprite_clip)
-            elif(puyoBottle[i][j] == 3):
-                screen.blit(green.sprite, (j*16,i*16),green.sprite_clip)
-            elif(puyoBottle[i][j] == 4):
-                screen.blit(blue.sprite, (j*16,i*16),blue.sprite_clip)
-            elif(puyoBottle[i][j] == 5):
-                screen.blit(purple.sprite, (j*16,i*16),purple.sprite_clip)
-    
+            if(puyoBottle[i][j] == 1): screen.blit(red.sprite, (j*16,i*16), blockLiner(j,i,1))
+            elif(puyoBottle[i][j] == 2): screen.blit(yellow.sprite, (j*16,i*16), blockLiner(j,i,2))
+            elif(puyoBottle[i][j] == 3): screen.blit(green.sprite, (j*16,i*16), blockLiner(j,i,3))
+            elif(puyoBottle[i][j] == 4): screen.blit(blue.sprite, (j*16,i*16), blockLiner(j,i,4))
+            elif(puyoBottle[i][j] == 5): screen.blit(purple.sprite, (j*16,i*16), blockLiner(j,i,5))
     #블록
     for i in range(0,3):
         for j in range(0,3):
-            if(roundDrops[i][j] == 1):
-                screen.blit(red.sprite, ((j+roundDropsX)*16,(i+roundDropsY)*16), red.sprite_clip)
-            elif(roundDrops[i][j] == 2):
-                screen.blit(yellow.sprite, ((j+roundDropsX)*16,(i+roundDropsY)*16),yellow.sprite_clip)
-            elif(roundDrops[i][j] == 3):
-                screen.blit(green.sprite, ((j+roundDropsX)*16,(i+roundDropsY)*16),green.sprite_clip)
-            elif(roundDrops[i][j] == 4):
-                screen.blit(blue.sprite, ((j+roundDropsX)*16,(i+roundDropsY)*16),blue.sprite_clip)
-            elif(roundDrops[i][j] == 5):
-                screen.blit(purple.sprite, ((j+roundDropsX)*16,(i+roundDropsY)*16),purple.sprite_clip)
+            if(roundDrops[i][j] == 1): screen.blit(red.sprite, ((j+roundDropsX)*16,(i+roundDropsY)*16), red.sprite_clip)
+            elif(roundDrops[i][j] == 2): screen.blit(yellow.sprite, ((j+roundDropsX)*16,(i+roundDropsY)*16),yellow.sprite_clip)
+            elif(roundDrops[i][j] == 3): screen.blit(green.sprite, ((j+roundDropsX)*16,(i+roundDropsY)*16),green.sprite_clip)
+            elif(roundDrops[i][j] == 4): screen.blit(blue.sprite, ((j+roundDropsX)*16,(i+roundDropsY)*16),blue.sprite_clip)
+            elif(roundDrops[i][j] == 5): screen.blit(purple.sprite, ((j+roundDropsX)*16,(i+roundDropsY)*16),purple.sprite_clip)
     
-
 #게임 진행 루프
 running = True
 while running:
@@ -181,10 +233,41 @@ while running:
         if fallingTicks == 10:
             fallingTicks = 0
             roundDropsY += 1
-    if roundDropsY == 20:
-        print("바닥")
+            #print(roundDropsY)
+            #print(any(roundDrops[2]))
         
     #판정
+    #아래에 블록이 있다면
+    '''if (not(any(roundDrops[2])) and puyoBottle[roundDropsY + 1][roundDropsX] > 0):  #회전축이 위에 있으면
+        print("블록이 있었네")
+        puyoBottle[roundDropsY + 1][roundDropsX + 1] = roundDrops[1][1]
+        if(roundDrops[0][1] > 0):   #회전축이 위에 있을 때
+            puyoBottle[roundDropsY][roundDropsX + 1] = roundDrops[0][1]
+        elif(roundDrops[1][0] > 0): #회전축이 좌측에 있을 때
+            puyoBottle[roundDropsY + 1][roundDropsX] = roundDrops[1][0]
+        elif(roundDrops[1][2] > 0): #회전축이 우측에 있을 때
+            puyoBottle[roundDropsY + 1][roundDropsX + 2] = roundDrops[1][2]'''
+    #바닥에 닿으면
+    if (not(any(roundDrops[2])) and roundDropsY == 18) or (any(roundDrops[2]) and roundDropsY == 17):
+        #puyoBottle[roundDropsY + 1][roundDropsX + 1] = roundDrops[1][1]
+        if roundDropsY == 18: #회전축이 아래에 있지 않을 때
+            puyoBottle[roundDropsY + 1][roundDropsX + 1] = roundDrops[1][1]
+            if(roundDrops[0][1] > 0):   #회전축이 위에 있을 때
+                puyoBottle[roundDropsY][roundDropsX + 1] = roundDrops[0][1]
+            elif(roundDrops[1][0] > 0): #회전축이 좌측에 있을 때
+                puyoBottle[roundDropsY + 1][roundDropsX] = roundDrops[1][0]
+            elif(roundDrops[1][2] > 0): #회전축이 우측에 있을 때
+                puyoBottle[roundDropsY + 1][roundDropsX + 2] = roundDrops[1][2]
+        elif roundDropsY == 17: #회전축이 아래에 있을 때
+            puyoBottle[roundDropsY + 1][roundDropsX + 1] = roundDrops[1][1]
+            puyoBottle[roundDropsY + 2][roundDropsX + 1] = roundDrops[2][1]
+        #새로 생성
+        roundDrops = [[0,0,0],[0,0,0],[0,0,0]]
+        roundDrops[0][1] = random.randrange(1,6)
+        roundDrops[1][1] = random.randrange(1,6)
+        roundDropsX = 0
+        roundDropsY = 0
+    
         
     drawImage()
     
