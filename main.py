@@ -70,7 +70,7 @@ fallingTicks = 0
 def blockLiner(x, y, i): #똑같은 블록 검사
     hor = 0
     ver = 0
-    if x <= 9 and puyoBottle[y][x + 1] == i:  #우측에 똑같은게 있는지
+    if x < 9 and puyoBottle[y][x + 1] == i:  #우측에 똑같은게 있는지
         if x >= 0 and puyoBottle[y][x - 1] == i:   #좌측에 똑같은게 있는지
             if y < 19 and puyoBottle[y + 1][x] == i:   #하단에 똑같은게 있는지
                 if puyoBottle[y - 1][x] == i:   #상단에 똑같은게 있는지
@@ -126,6 +126,7 @@ def blockLiner(x, y, i): #똑같은 블록 검사
         hor = 0
         ver = 0
     return (hor*16,ver*16,16,16)
+
 
 #이미지 그리기
 def drawImage():
@@ -233,20 +234,31 @@ while running:
         if fallingTicks == 10:
             fallingTicks = 0
             roundDropsY += 1
-            #print(roundDropsY)
-            #print(any(roundDrops[2]))
         
     #판정
-    #아래에 블록이 있다면
-    '''if (not(any(roundDrops[2])) and puyoBottle[roundDropsY + 1][roundDropsX] > 0):  #회전축이 위에 있으면
-        print("블록이 있었네")
-        puyoBottle[roundDropsY + 1][roundDropsX + 1] = roundDrops[1][1]
-        if(roundDrops[0][1] > 0):   #회전축이 위에 있을 때
-            puyoBottle[roundDropsY][roundDropsX + 1] = roundDrops[0][1]
-        elif(roundDrops[1][0] > 0): #회전축이 좌측에 있을 때
-            puyoBottle[roundDropsY + 1][roundDropsX] = roundDrops[1][0]
-        elif(roundDrops[1][2] > 0): #회전축이 우측에 있을 때
-            puyoBottle[roundDropsY + 1][roundDropsX + 2] = roundDrops[1][2]'''
+    
+    if (roundDrops[2][1] > 0) and puyoBottle[roundDropsY+2][roundDropsX + 1] > 0:   #아래에 블록이 있다면
+        print("바닥")
+        puyoBottle[roundDropsY + 1][roundDropsX + 1] = roundDrops[2][1]
+        puyoBottle[roundDropsY][roundDropsX + 1] = roundDrops[1][1]
+        #새로 생성
+        roundDrops = [[0,0,0],[0,0,0],[0,0,0]]
+        roundDrops[0][1] = random.randrange(1,6)
+        roundDrops[1][1] = random.randrange(1,6)
+        roundDropsX = 0
+        roundDropsY = 0
+    elif (roundDrops[0][1] > 0) and puyoBottle[roundDropsY + 1][roundDropsX + 1] > 0:    #위쪽에 블록이 있다면
+        print("위쪽")
+        puyoBottle[roundDropsY - 1][roundDropsX + 1] = roundDrops[0][1]
+        puyoBottle[roundDropsY][roundDropsX + 1] = roundDrops[1][1]
+        #새로 생성
+        roundDrops = [[0,0,0],[0,0,0],[0,0,0]]
+        roundDrops[0][1] = random.randrange(1,6)
+        roundDrops[1][1] = random.randrange(1,6)
+        roundDropsX = 0
+        roundDropsY = 0
+    elif (roundDrops[1][0] > 0):    #왼쪽에 블록이 있다면
+        print("왼쪽")
     #바닥에 닿으면
     if (not(any(roundDrops[2])) and roundDropsY == 18) or (any(roundDrops[2]) and roundDropsY == 17):
         #puyoBottle[roundDropsY + 1][roundDropsX + 1] = roundDrops[1][1]
