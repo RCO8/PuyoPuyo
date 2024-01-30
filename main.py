@@ -221,10 +221,8 @@ while running:
     
     #이동
     roundDropsX += roundMoves
-    if(roundDropsX < -1):
-        roundDropsX = -1
-    elif(roundDropsX > 8):
-        roundDropsX = 8
+    if(roundDropsX < -1):   roundDropsX = -1
+    elif(roundDropsX > 8):  roundDropsX = 8
     
     #하락
     if roundDown:
@@ -238,7 +236,7 @@ while running:
     #판정
     
     if (roundDrops[2][1] > 0) and puyoBottle[roundDropsY+2][roundDropsX + 1] > 0:   #아래에 블록이 있다면
-        print("바닥")
+        #print("바닥")
         puyoBottle[roundDropsY + 1][roundDropsX + 1] = roundDrops[2][1]
         puyoBottle[roundDropsY][roundDropsX + 1] = roundDrops[1][1]
         #새로 생성
@@ -248,7 +246,7 @@ while running:
         roundDropsX = 0
         roundDropsY = 0
     elif (roundDrops[0][1] > 0) and puyoBottle[roundDropsY + 1][roundDropsX + 1] > 0:    #위쪽에 블록이 있다면
-        print("위쪽")
+        #print("위쪽")
         puyoBottle[roundDropsY - 1][roundDropsX + 1] = roundDrops[0][1]
         puyoBottle[roundDropsY][roundDropsX + 1] = roundDrops[1][1]
         #새로 생성
@@ -257,8 +255,26 @@ while running:
         roundDrops[1][1] = random.randrange(1,6)
         roundDropsX = 0
         roundDropsY = 0
-    elif (roundDrops[1][0] > 0):    #왼쪽에 블록이 있다면
+    elif (roundDrops[1][0] > 0) and puyoBottle[roundDropsY + 1][roundDropsX] > 0:    #왼쪽에 블록이 있다면
         print("왼쪽")
+        puyoBottle[roundDropsY][roundDropsX] = roundDrops[1][0]
+        puyoBottle[roundDropsY][roundDropsX + 1] = roundDrops[1][1]
+        #새로 생성
+        roundDrops = [[0,0,0],[0,0,0],[0,0,0]]
+        roundDrops[0][1] = random.randrange(1,6)
+        roundDrops[1][1] = random.randrange(1,6)
+        roundDropsX = 0
+        roundDropsY = 0
+    elif (roundDrops[1][2] > 0) and puyoBottle[roundDropsY + 1][roundDropsX + 2] > 0:    #오른쪽에 블록이 있다면
+        print("오른쪽")
+        puyoBottle[roundDropsY][roundDropsX + 2] = roundDrops[1][2]
+        puyoBottle[roundDropsY][roundDropsX + 1] = roundDrops[1][1]
+        #새로 생성
+        roundDrops = [[0,0,0],[0,0,0],[0,0,0]]
+        roundDrops[0][1] = random.randrange(1,6)
+        roundDrops[1][1] = random.randrange(1,6)
+        roundDropsX = 0
+        roundDropsY = 0
     #바닥에 닿으면
     if (not(any(roundDrops[2])) and roundDropsY == 18) or (any(roundDrops[2]) and roundDropsY == 17):
         #puyoBottle[roundDropsY + 1][roundDropsX + 1] = roundDrops[1][1]
