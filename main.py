@@ -67,6 +67,10 @@ roundDropsY = 0
 
 fallingTicks = 0
 
+fallingTime = False  #블록 아래가 비었을 때 떨어질 상태
+fallingTimeStartX = 0
+fallingTimeStartY = 0
+
 def blockLiner(x, y, i): #똑같은 블록 검사
     hor = 0
     ver = 0
@@ -148,7 +152,8 @@ def drawImage():
             elif(roundDrops[i][j] == 3): screen.blit(green.sprite, ((j+roundDropsX)*16,(i+roundDropsY)*16),green.sprite_clip)
             elif(roundDrops[i][j] == 4): screen.blit(blue.sprite, ((j+roundDropsX)*16,(i+roundDropsY)*16),blue.sprite_clip)
             elif(roundDrops[i][j] == 5): screen.blit(purple.sprite, ((j+roundDropsX)*16,(i+roundDropsY)*16),purple.sprite_clip)
-    
+
+
 #게임 진행 루프
 running = True
 while running:
@@ -164,52 +169,52 @@ while running:
         #키를 누르고 있을 때
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                #print("좌로 이동")
-                roundMoves = -1
+                    #print("좌로 이동")
+                    roundMoves = -1
             elif event.key == pygame.K_RIGHT:
-                #print("우로 이동")
-                roundMoves = 1
+                    #print("우로 이동")
+                    roundMoves = 1
             if event.key == pygame.K_UP:
                 print("바로 내리기")
             elif event.key == pygame.K_DOWN:
-                #print("더 내리기")
-                roundDown = True
+                    #print("더 내리기")
+                    roundDown = True
             if event.key == pygame.K_z:
-                #print("좌로 회전")
-                if roundDrops[0][1] > 0:    #상단위치
-                    roundDrops[1][0] = roundDrops[0][1]
-                    roundDrops[0][1] = 0
-                    if roundDropsX == -1:
-                        roundDropsX += 1
-                elif roundDrops[1][0] > 0:  #좌측위치
-                    roundDrops[2][1] = roundDrops[1][0]
-                    roundDrops[1][0] = 0
-                elif roundDrops[2][1] > 0:  #하단위치
-                    roundDrops[1][2] = roundDrops[2][1]
-                    roundDrops[2][1] = 0
-                    if roundDropsX == 8:
-                        roundDropsX -= 1
-                elif roundDrops[1][2] > 0:  #우측위치
-                    roundDrops[0][1] = roundDrops[1][2]
-                    roundDrops[1][2] = 0 
+                    #print("좌로 회전")
+                    if roundDrops[0][1] > 0:    #상단위치
+                        roundDrops[1][0] = roundDrops[0][1]
+                        roundDrops[0][1] = 0
+                        if roundDropsX == -1:
+                            roundDropsX += 1
+                    elif roundDrops[1][0] > 0:  #좌측위치
+                        roundDrops[2][1] = roundDrops[1][0]
+                        roundDrops[1][0] = 0
+                    elif roundDrops[2][1] > 0:  #하단위치
+                        roundDrops[1][2] = roundDrops[2][1]
+                        roundDrops[2][1] = 0
+                        if roundDropsX == 8:
+                            roundDropsX -= 1
+                    elif roundDrops[1][2] > 0:  #우측위치
+                        roundDrops[0][1] = roundDrops[1][2]
+                        roundDrops[1][2] = 0 
             elif event.key == pygame.K_x:
-                #print("우로 회전")
-                if roundDrops[0][1] > 0:    #상단위치
-                    roundDrops[1][2] = roundDrops[0][1]
-                    roundDrops[0][1] = 0
-                    if roundDropsX == 8:
-                        roundDropsX -= 1
-                elif roundDrops[1][2] > 0:  #우측위치   
-                    roundDrops[2][1] = roundDrops[1][2]
-                    roundDrops[1][2] = 0
-                elif roundDrops[2][1] > 0:  #하단위치
-                    roundDrops[1][0] = roundDrops[2][1]
-                    roundDrops[2][1] = 0
-                    if roundDropsX == -1:
-                        roundDropsX += 1
-                elif roundDrops[1][0] > 0:  #좌측위치
-                    roundDrops[0][1] = roundDrops[1][0]
-                    roundDrops[1][0] = 0 
+                    #print("우로 회전")
+                    if roundDrops[0][1] > 0:    #상단위치
+                        roundDrops[1][2] = roundDrops[0][1]
+                        roundDrops[0][1] = 0
+                        if roundDropsX == 8:
+                            roundDropsX -= 1
+                    elif roundDrops[1][2] > 0:  #우측위치   
+                        roundDrops[2][1] = roundDrops[1][2]
+                        roundDrops[1][2] = 0
+                    elif roundDrops[2][1] > 0:  #하단위치
+                        roundDrops[1][0] = roundDrops[2][1]
+                        roundDrops[2][1] = 0
+                        if roundDropsX == -1:
+                            roundDropsX += 1
+                    elif roundDrops[1][0] > 0:  #좌측위치
+                        roundDrops[0][1] = roundDrops[1][0]
+                        roundDrops[1][0] = 0 
         #키를 떼었을 때
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
@@ -220,21 +225,23 @@ while running:
     #갱신
     
     #이동
-    roundDropsX += roundMoves
-    if(roundDropsX < -1):   roundDropsX = -1
-    elif(roundDropsX > 8):  roundDropsX = 8
-    
-    #하락
-    if roundDown:
-        roundDropsY += 1
-    else:
-        fallingTicks += 1
-        if fallingTicks == 10:
-            fallingTicks = 0
+    if not fallingTime:
+        roundDropsX += roundMoves
+        if(roundDropsX < -1):   roundDropsX = -1
+        elif(roundDropsX > 8):  roundDropsX = 8
+            
+        #하락
+        if roundDown:
             roundDropsY += 1
+        else:
+            fallingTicks += 1
+            if fallingTicks == 10:
+                fallingTicks = 0
+                roundDropsY += 1
         
     #판정
     
+    #상하배치
     if (roundDrops[2][1] > 0) and puyoBottle[roundDropsY+2][roundDropsX + 1] > 0:   #아래에 블록이 있다면
         #print("바닥")
         puyoBottle[roundDropsY + 1][roundDropsX + 1] = roundDrops[2][1]
@@ -255,26 +262,85 @@ while running:
         roundDrops[1][1] = random.randrange(1,6)
         roundDropsX = 0
         roundDropsY = 0
-    elif (roundDrops[1][0] > 0) and puyoBottle[roundDropsY + 1][roundDropsX] > 0:    #왼쪽에 블록이 있다면
-        print("왼쪽")
+    #좌우배치
+    elif (roundDrops[1][1] > 0) and puyoBottle[roundDropsY + 1][roundDropsX + 1] > 0:    #가운데 아래에 블록이 있다면
+        puyoBottle[roundDropsY][roundDropsX + 1] = roundDrops[1][1]
+        #한쪽의 아래칸이 비어있으면
+        if (roundDropsY < 19):
+            if (roundDrops[1][0] > 0):  #좌측이 비어있다면
+                if(puyoBottle[roundDropsY + 1][roundDropsX] == 0):
+                    print("비었음")
+                    fallingTime = True
+                    fallingTimeStartX = roundDropsX
+                    fallingTimeStartY = roundDropsY
+                
+                puyoBottle[roundDropsY][roundDropsX] = roundDrops[1][0]
+                #새로 생성
+                roundDrops = [[0,0,0],[0,0,0],[0,0,0]]
+                roundDrops[0][1] = random.randrange(1,6)
+                roundDrops[1][1] = random.randrange(1,6)
+                roundDropsX = 0
+                roundDropsY = 0
+            elif (roundDrops[1][2] > 0):
+                if(puyoBottle[roundDropsY + 1][roundDropsX + 2] == 0):  #우측이 비어있다면
+                    print("오른쪽 하강")
+                    fallingTime = True
+                    fallingTimeStartX = roundDropsX + 2
+                    fallingTimeStartY = roundDropsY
+                    
+                puyoBottle[roundDropsY][roundDropsX + 2] = roundDrops[1][2]
+                #새로 생성
+                roundDrops = [[0,0,0],[0,0,0],[0,0,0]]
+                roundDrops[0][1] = random.randrange(1,6)
+                roundDrops[1][1] = random.randrange(1,6)
+                roundDropsX = 0
+                roundDropsY = 0
+        #새로 생성
+    '''elif (roundDrops[1][0] > 0) and puyoBottle[roundDropsY + 1][roundDropsX] > 0:   #왼쪽 아래에 블록이 있다면
         puyoBottle[roundDropsY][roundDropsX] = roundDrops[1][0]
-        puyoBottle[roundDropsY][roundDropsX + 1] = roundDrops[1][1]
-        #새로 생성
-        roundDrops = [[0,0,0],[0,0,0],[0,0,0]]
-        roundDrops[0][1] = random.randrange(1,6)
-        roundDrops[1][1] = random.randrange(1,6)
-        roundDropsX = 0
-        roundDropsY = 0
-    elif (roundDrops[1][2] > 0) and puyoBottle[roundDropsY + 1][roundDropsX + 2] > 0:    #오른쪽에 블록이 있다면
-        print("오른쪽")
+        #한쪽의 아래칸이 비어있으면
+        if (roundDrops[1][1] > 0):
+            if (roundDropsY < 19) and (puyoBottle[roundDropsY + 1][roundDropsX + 1] == 0):
+                #여기서 아래까지 떨어지게
+                fallingTime = True
+                #puyoBottle[roundDropsY + 1][roundDropsX + 1] = roundDrops[1][1]
+            else:
+                puyoBottle[roundDropsY][roundDropsX + 1] = roundDrops[1][1]
+                #새로 생성
+                roundDrops = [[0,0,0],[0,0,0],[0,0,0]]
+                roundDrops[0][1] = random.randrange(1,6)
+                roundDrops[1][1] = random.randrange(1,6)
+                roundDropsX = 0
+                roundDropsY = 0
+                fallingTime = False
+    elif (roundDrops[1][2] > 0) and puyoBottle[roundDropsY + 1][roundDropsX + 2] > 0:
         puyoBottle[roundDropsY][roundDropsX + 2] = roundDrops[1][2]
-        puyoBottle[roundDropsY][roundDropsX + 1] = roundDrops[1][1]
+        #한쪽의 아래칸이 비어있으면
+        if (roundDrops[1][1] > 0):
+            puyoBottle[roundDropsY][roundDropsX + 1] = roundDrops[1][1]
         #새로 생성
         roundDrops = [[0,0,0],[0,0,0],[0,0,0]]
         roundDrops[0][1] = random.randrange(1,6)
         roundDrops[1][1] = random.randrange(1,6)
         roundDropsX = 0
         roundDropsY = 0
+    '''
+    
+    #추락판정 (블록 아래칸이 비어있으면)
+    if fallingTime:
+        print("블록 아래칸이 비었을 때 떨어지도록")
+        print("{0} {1}".format(fallingTimeStartX, fallingTimeStartY))
+        if (puyoBottle[fallingTimeStartY + 1][fallingTimeStartX] == 0):
+            print("없네")
+            puyoBottle[fallingTimeStartY + 1][fallingTimeStartX] = puyoBottle[fallingTimeStartY][fallingTimeStartX]
+            puyoBottle[fallingTimeStartY][fallingTimeStartX] = 0
+            if (fallingTimeStartY < 18):
+                fallingTimeStartY += 1
+            else:
+                fallingTime = False
+        else:
+            fallingTime = False
+        
     #바닥에 닿으면
     if (not(any(roundDrops[2])) and roundDropsY == 18) or (any(roundDrops[2]) and roundDropsY == 17):
         #puyoBottle[roundDropsY + 1][roundDropsX + 1] = roundDrops[1][1]
@@ -296,10 +362,10 @@ while running:
         roundDropsX = 0
         roundDropsY = 0
     
+    pygame.display.update()
         
     drawImage()
     
-    pygame.display.update()
 
 pygame.time.delay(500)
 pygame.quit()
