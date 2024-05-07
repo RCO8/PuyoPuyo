@@ -3,7 +3,7 @@ import pygame
 import random
 import bg_colors
 from resources import ImageResources, BackgoundMusic
-import dataInit
+from dataInit import board ,dataInit
 
 pygame.init()
 
@@ -27,7 +27,6 @@ game_font = pygame.font.Font(None, 40)
 #게임 배경 및 이미지
 
 red = ImageResources('red.png')
-red.setPosition(0,0)
 red.setClipping(0,0,16,16)
 
 yellow = ImageResources('yellow.png')
@@ -35,6 +34,7 @@ yellow.setPosition(16,0)
 yellow.setClipping(0,0,16,16)
 
 green = ImageResources('green.png')
+green.setPosition(32,0)
 green.setClipping(0,0,16,16)
 
 blue = ImageResources('blue.png')
@@ -46,14 +46,30 @@ purple.setPosition(64,0)
 purple.setClipping(0,0,16,16)
 
 #데이터 설정
-dataInit.dataInit()
+dataInit()
 
-#움직일 블록
+board[0][4] = random.randrange(1,6) #회전블록
+board[1][4] = random.randrange(1,6) #중심블록
+
+
 
 #이미지 그리기
 def drawImage():
     screen.fill(bg_colors.bg_black)
     screen.fill(bg_colors.bg_orange,(0,0,160,320))  #블록판 채우기
+    #맞는 색깔 그리기
+    for i in range(20):
+        for j in range(10):
+            if board[i][j] == 1:
+                screen.blit(red.sprite, (j*16,i*16), red.sprite_clip)
+            elif board[i][j] == 2:
+                screen.blit(yellow.sprite, (j*16,i*16), yellow.sprite_clip)
+            elif board[i][j] == 3:
+                screen.blit(green.sprite, (j*16,i*16), green.sprite_clip)
+            elif board[i][j] == 4:
+                screen.blit(blue.sprite, (j*16,i*16), blue.sprite_clip)
+            elif board[i][j] == 5:
+                screen.blit(purple.sprite, (j*16,i*16), purple.sprite_clip)
 
 
 #게임 진행 루프
@@ -95,9 +111,10 @@ while running:
     #갱신
         
     #판정
-    pygame.display.update()
+
         
     drawImage()
+    pygame.display.update()
     
 
 pygame.time.delay(500)

@@ -12,6 +12,9 @@ class ImageResources:
         self.sprite_height = self.sprite.get_height()
         self.sprite_clip = Rect(0,0,self.sprite_width,self.sprite_height)
         self.sprite_direction = 0.0
+    # 스프라이트 좌표 반환
+    def getPosition(self,x,y):
+        return (self.sprite_xpos, self.sprite_ypos)
     # 스프라이트를 해당 좌표로 이동
     def setPosition(self,x,y):
         self.sprite_xpos = x
