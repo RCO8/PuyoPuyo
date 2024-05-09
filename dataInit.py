@@ -39,7 +39,6 @@ def RotateBlock(x, y, dir = 0):
             board[y - 1][x] = board[y][x - 1]
             board[y][x - 1] = 0
     return
-
 def MoveBlock(blocks, direction):
     blocks[0][0] += direction
     board[blocks[0][1]][blocks[0][0]] = blocks[0][2]
@@ -48,3 +47,5 @@ def MoveBlock(blocks, direction):
     board[blocks[1][1]][blocks[1][0]] = blocks[1][2]
     board[blocks[1][1]][blocks[1][0] - direction] = 0
     return
+
+#블록 판정
