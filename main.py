@@ -3,7 +3,7 @@ import pygame
 import random
 import bg_colors
 from resources import ImageResources, BackgoundMusic
-from dataInit import board ,dataInit
+import dataInit
 
 pygame.init()
 
@@ -25,7 +25,6 @@ pygame.display.set_caption("뿌요뿌요")
 game_font = pygame.font.Font(None, 40)
 
 #게임 배경 및 이미지
-
 red = ImageResources('red.png')
 red.setClipping(0,0,16,16)
 
@@ -46,12 +45,13 @@ purple.setPosition(64,0)
 purple.setClipping(0,0,16,16)
 
 #데이터 설정
-dataInit()
+dataInit.dataInit()
 
-board[0][4] = random.randrange(1,6) #회전블록
-board[1][4] = random.randrange(1,6) #중심블록
+rotateBlock = [4,0,random.randrange(1,6)] #회전블록 (x,y, block)
+pointBlock = [4,1,random.randrange(1,6)] #중심블록 (x,y, block)
 
-
+dataInit.board[pointBlock[1]][pointBlock[0]] = pointBlock[2]
+dataInit.board[rotateBlock[1]][rotateBlock[0]] = rotateBlock[2]
 
 #이미지 그리기
 def drawImage():
@@ -60,15 +60,15 @@ def drawImage():
     #맞는 색깔 그리기
     for i in range(20):
         for j in range(10):
-            if board[i][j] == 1:
+            if dataInit.board[i][j] == 1:
                 screen.blit(red.sprite, (j*16,i*16), red.sprite_clip)
-            elif board[i][j] == 2:
+            elif dataInit.board[i][j] == 2:
                 screen.blit(yellow.sprite, (j*16,i*16), yellow.sprite_clip)
-            elif board[i][j] == 3:
+            elif dataInit.board[i][j] == 3:
                 screen.blit(green.sprite, (j*16,i*16), green.sprite_clip)
-            elif board[i][j] == 4:
+            elif dataInit.board[i][j] == 4:
                 screen.blit(blue.sprite, (j*16,i*16), blue.sprite_clip)
-            elif board[i][j] == 5:
+            elif dataInit.board[i][j] == 5:
                 screen.blit(purple.sprite, (j*16,i*16), purple.sprite_clip)
 
 
@@ -88,30 +88,30 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 #print("좌로 이동")
-                roundMoves = -1
+                dataInit.MoveBlock([pointBlock,rotateBlock],-1)
             elif event.key == pygame.K_RIGHT:
                 #print("우로 이동")
-                roundMoves = 1
+                dataInit.MoveBlock([pointBlock,rotateBlock], 1)
             if event.key == pygame.K_UP:
                 print("바로 내리기")
             elif event.key == pygame.K_DOWN:
                 #print("더 내리기")
                 roundDown = True
             if event.key == pygame.K_z:
-                print("좌로 회전")
+                #print("좌로 회전")
+                dataInit.RotateBlock(pointBlock[0],pointBlock[1],-1)
             elif event.key == pygame.K_x:
-                print("우로 회전")
+                #print("우로 회전")
+                dataInit.RotateBlock(pointBlock[0],pointBlock[1],1)
         #키를 떼었을 때
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 roundMoves = 0
             if event.key == pygame.K_DOWN:
                 roundDown = False
-    
-    #갱신
-        
-    #판정
 
+
+    #블록이 아래 블록이나 땅에 닿으면
         
     drawImage()
     pygame.display.update()

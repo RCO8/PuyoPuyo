@@ -11,8 +11,40 @@ def dataInit():
     return
 
 #각 블록 제어
-def blockControl():
-    #중심 블록
-    #회전 블록
+def RotateBlock(x, y, dir = 0):
+    if dir < 0: #좌로 회전
+        if board[y - 1][x] > 0: #위에 블록이 있으면
+            board[y][x - 1] = board[y - 1][x]
+            board[y - 1][x] = 0
+        elif board[y][x - 1] > 0: #왼쪽에 블록이 있으면
+            board[y + 1][x] = board[y][x - 1];
+            board[y][x - 1] = 0
+        elif board[y + 1][x] > 0: #아래에 블록이 있으면
+            board[y][x + 1] = board[y + 1][x]
+            board[y + 1][x] = 0
+        elif board[y][x + 1] > 0: #오른쪽에 블록이 있으면
+            board[y - 1][x] = board[y][x + 1]
+            board[y][x + 1] = 0
+    elif dir > 0: #우로 회전
+        if board[y - 1][x] > 0: #위에 블록이 있으면
+            board[y][x + 1] = board[y - 1][x]
+            board[y - 1][x] = 0
+        elif board[y][x + 1] > 0: #오른쪽에 블록이 있으면
+            board[y + 1][x] = board[y][x + 1]
+            board[y][x + 1] = 0
+        elif board[y + 1][x] > 0: #아래에 블록이 있으면
+            board[y][x - 1] = board[y + 1][x]
+            board[y + 1][x] = 0
+        elif board[y][x - 1] > 0: #왼쪽에 블록이 있으면
+            board[y - 1][x] = board[y][x - 1]
+            board[y][x - 1] = 0
+    return
 
+def MoveBlock(blocks, direction):
+    blocks[0][0] += direction
+    board[blocks[0][1]][blocks[0][0]] = blocks[0][2]
+    board[blocks[0][1]][blocks[0][0] - direction] = 0
+    blocks[1][0] += direction
+    board[blocks[1][1]][blocks[1][0]] = blocks[1][2]
+    board[blocks[1][1]][blocks[1][0] - direction] = 0
     return
