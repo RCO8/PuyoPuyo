@@ -113,7 +113,8 @@ while running:
 
     #블록이 아래 블록이나 땅에 닿으면
     #아님 아래로 내리기
-        
+    dataInit.DownBlock([pointBlock, rotateBlock])
+
     drawImage()
     pygame.display.update()
     

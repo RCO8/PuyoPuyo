@@ -40,12 +40,23 @@ def RotateBlock(x, y, dir = 0):
             board[y][x - 1] = 0
     return
 def MoveBlock(blocks, direction):
+    #Point Block
     blocks[0][0] += direction
     board[blocks[0][1]][blocks[0][0]] = blocks[0][2]
     board[blocks[0][1]][blocks[0][0] - direction] = 0
+    #Rotate Block
     blocks[1][0] += direction
     board[blocks[1][1]][blocks[1][0]] = blocks[1][2]
     board[blocks[1][1]][blocks[1][0] - direction] = 0
     return
 
 #블록 판정
+
+def DownBlock(blocks):
+    #Point Block
+    blocks[0][1] += 1
+    board[blocks[0][1]][blocks[0][0]] = blocks[0][2]
+    #Rotate Block
+    blocks[1][1] += 1
+    board[blocks[1][1]][blocks[1][0]] = blocks[1][2]
+    board[blocks[1][1]-1][blocks[1][0]] = 0
